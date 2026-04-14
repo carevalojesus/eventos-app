@@ -1,0 +1,11 @@
+# 🔐 Copia este archivo como ".env" y completa con tus datos
+SECRET_KEY=django-insecure-cambia-esto-en-produccion-por-algo-seguro
+DEBUG=True
+
+# 🍃 MongoDB Atlas — consigue tu URI en: https://cloud.mongodb.com
+# Formato: mongodb+srv://USUARIO:PASSWORD@cluster0.xxxxx.mongodb.net/
+MONGODB_URI=mongodb+srv://usuario:password@cluster0.xxxxx.mongodb.net/
+MONGODB_DB=eventos_db
+
+# 🌐 Origen permitido para CORS (tu frontend Astro)
+CORS_ORIGIN=http://localhost:4321

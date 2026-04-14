@@ -1,0 +1,121 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Nuevo evento">
+  <main class="max-w-xl mx-auto px-6 py-10">
+    <header class="mb-6">
+      <a href="/" class="text-sm text-neutral-400 hover:text-neutral-900 transition">← Volver</a>
+      <h1 class="text-2xl font-semibold tracking-tight mt-3 text-balance">Nuevo evento</h1>
+      <p class="text-neutral-400 mt-1 text-sm text-pretty">Completa los datos del evento a registrar</p>
+    </header>
+
+    <form id="form-evento" class="p-6 rounded-xl ring-1 ring-black/5 space-y-4">
+      <div>
+        <label class="text-sm font-medium mb-1" for="titulo">Título *</label>
+        <input
+          id="titulo"
+          name="titulo"
+          required
+          maxlength="200"
+          class="mt-1 w-full ring-1 ring-black/10 rounded-lg px-3 py-2 text-sm focus:outline-2 focus:outline-rose-600 -outline-offset-1"
+          placeholder="Ej: Charla de Python OOP"
+        />
+      </div>
+
+      <div>
+        <label class="text-sm font-medium mb-1" for="descripcion">Descripción *</label>
+        <textarea
+          id="descripcion"
+          name="descripcion"
+          required
+          rows="3"
+          class="mt-1 w-full ring-1 ring-black/10 rounded-lg px-3 py-2 text-sm focus:outline-2 focus:outline-rose-600 -outline-offset-1"
+          placeholder="¿De qué trata el evento?"
+        ></textarea>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm font-medium mb-1" for="fecha">Fecha y hora *</label>
+          <input
+            id="fecha"
+            name="fecha"
+            type="datetime-local"
+            required
+            class="mt-1 w-full ring-1 ring-black/10 rounded-lg px-3 py-2 text-sm focus:outline-2 focus:outline-rose-600 -outline-offset-1"
+          />
+        </div>
+        <div>
+          <label class="text-sm font-medium mb-1" for="cupo">Cupo *</label>
+          <input
+            id="cupo"
+            name="cupo"
+            type="number"
+            required
+            min="1"
+            max="10000"
+            class="mt-1 w-full ring-1 ring-black/10 rounded-lg px-3 py-2 text-sm focus:outline-2 focus:outline-rose-600 -outline-offset-1"
+            placeholder="50"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="text-sm font-medium mb-1" for="lugar">Lugar *</label>
+        <input
+          id="lugar"
+          name="lugar"
+          required
+          maxlength="200"
+          class="mt-1 w-full ring-1 ring-black/10 rounded-lg px-3 py-2 text-sm focus:outline-2 focus:outline-rose-600 -outline-offset-1"
+          placeholder="Ej: Auditorio FISI-UNAP"
+        />
+      </div>
+
+      <div id="mensaje" class="hidden p-3 rounded-lg text-sm"></div>
+
+      <div class="flex gap-3 pt-2">
+        <button
+          type="submit"
+          class="flex-1 bg-rose-600 hover:bg-rose-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
+        >
+          Crear evento
+        </button>
+        <a
+          href="/"
+          class="px-3 py-2 ring-1 ring-black/10 rounded-lg text-sm hover:bg-neutral-50 transition"
+        >
+          Cancelar
+        </a>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    import { crearEvento } from '../lib/api.js';
+
+    const form = document.getElementById('form-evento') as HTMLFormElement;
+    const msg = document.getElementById('mensaje') as HTMLElement;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.className = 'hidden';
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData) as Record<string, any>;
+      data.cupo = parseInt(data.cupo);
+      data.fecha = new Date(data.fecha).toISOString();
+
+      try {
+        await crearEvento(data);
+        msg.className = 'p-3 rounded-lg text-sm bg-green-50 text-green-700 ring-1 ring-green-600/10';
+        msg.textContent = '✓ Evento creado. Redirigiendo...';
+        setTimeout(() => (window.location.href = '/'), 800);
+      } catch (err) {
+        msg.className = 'p-3 rounded-lg text-sm bg-red-50 text-red-700 ring-1 ring-red-600/10';
+        msg.textContent = 'Error: ' + err.message;
+      }
+    });
+  </script>
+</Layout>
